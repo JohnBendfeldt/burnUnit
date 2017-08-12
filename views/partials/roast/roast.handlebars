@@ -1,3 +1,6 @@
+<nav class="z-depth-4 navigation">
+
+</nav>
 {{#roast}}
 <div class="row">
     <div class="col m6 s12">
@@ -15,8 +18,13 @@
             </div>
         </div>
     </div>
-    <div class="col m6 s12">
+    <div class="card col m6 s12 launch">
         <h3 class="center-align">All of the burns</h3>
+    
+    <!-- put this in the start modal -->
+    <div id="count-down"></div>    
+    
+    
     <div id="displayQuotes">
     </div>
     </div>
@@ -36,7 +44,7 @@
 </div>
 
 <div class="row">
-    <div class="input-field col m6 s12 launch">
+    <div id="burn" class="input-field col m6 s12">
 
         <div class="">
             <article class="">
@@ -66,7 +74,7 @@
     <div class="col m6 s12">
         <!-- chat info -->
         <div id="chatBox" style="background-color: white; height: 150px;">
-            <div id="chatMsg" style="height: 140px; overflow: auto;">This is a message</div>
+            <div id="chatMsg" style="height: 140px; overflow: auto;"></div>
         </div>
         <div class="input-field">
             <textarea id="textarea1" class="materialize-textarea" data-length="120" style="height: 100%"></textarea>
@@ -77,4 +85,5 @@
 </div>
 {{/roast}}
 
+<script type="text/javascript" src="../assets/js/timer.js"></script>
 <script type="text/javascript" src="../assets/js/roast.js"></script>

@@ -80,11 +80,29 @@ router.get("/profile/:email/:id", function(req, res){
             //check out using sessions to check the user status
             //req.session.user = user.dataValues;
             var hbsObject = { user: user };
-            res.render("partials/profile", hbsObject);
+            res.render("partials/user/profile", hbsObject);
         }
     });
 });
 
+
+router.get("/startroast/:id", function(req, res){
+     db.User.findOne({
+        where:
+        { id: req.params.id },
+        include: [db.Roast]
+    }).then(function (user) {
+        console.log("selected user: " + user);
+        if (!user) {
+            res.redirect('/login');
+        } else {
+            //check out using sessions to check the user status
+            //req.session.user = user.dataValues;
+            var hbsObject = { user: user };
+            res.render("partials/roast/start", hbsObject);
+        }
+    });
+});
 
 //get user by username and password
 //use for login
@@ -106,7 +124,7 @@ router.post("/", (req, res) => {
             //req.session.user = user.dataValues;
             orm.userLogin(email, password);
             var hbsObject = { user: user };
-            res.render("partials/start", hbsObject);
+            res.render("partials/roast/start", hbsObject);
         }
     });
 });
@@ -127,7 +145,7 @@ router.post("/create", function(req, res){
             /******maybe this could be refactored to a more concise format */
             if(!req.body.name.length > 2 || !req.body.username.length > 2 || !req.body.password.length > 7 || !req.body.image.length > 0){
                 console.log("order was not properly completed");
-                res.redirect("/users")
+                res.redirect("/signup")
             }
             else{
                 db.User.create({
@@ -154,20 +172,20 @@ router.post("/create", function(req, res){
 
 //update users
 //update name and password
-router.put("n/pw/:id", function(req, res){
-    db.User.update({
+router.put("/:id", function(req, res){
+    db.User.update(
         //can I user req.body here to update any parameters passed?
-        name: req.body.name, 
-        password:req.body.password},
+        req.body,
         {
             where: {id: req.params.id}
       }).then(function(dbUser) {
-        res.redirect("/users");
+          var hbsObject = {user:dbUser}
+        res.json(dbUser);
       });
 });
 
 //update image
-router.put("image/:id", function(req, res){
+router.put("/image/:id", function(req, res){
     db.User.update({
         image: req.body.image},
         {
@@ -184,7 +202,7 @@ router.delete("/:id", function(req, res){
         id: req.params.id
       }
     }).then(function(dbUser) {
-      res.redirect("/users");
+      res.redirect("/");
     });
 });
 

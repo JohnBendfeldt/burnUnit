@@ -13,25 +13,50 @@ $(document).ready(function () {
 
     var database = firebase.database();
     var chatData = database.ref("/chat");
-    var email = $("#email").attr("value");
-    var UserId = $("#UserId").attr("value");
+    
+    var user = JSON.parse(sessionStorage.getItem('user'));
+
+    if(user == undefined){
+        var email = $("#email").attr("value");
+        var UserId = $("#UserId").attr("value");
+        var startUrl = "startroast/" + UserId;
+        var profileUrl = "profile/" + email + "/" + UserId;
+        var username = $("#username").attr("value");
 
 
-    $("#profile").attr("href", )
-    var user = {
-        email: email,
-        UserId: UserId
+        user = {
+            email: email,
+            UserId: UserId,
+            profileUrl: profileUrl,
+            startUrl: startUrl,
+            username: username,
+            signedIn: true
+
+        }
+
+        sessionStorage.setItem('user', JSON.stringify(user));
+
+        console.log(user)
+        $("#profile-url").attr("href", user.profileUrl );
+        $("#startroast-url").attr("href", user.startUrl );
     }
 
-    localStorage.setItem('user', JSON.stringify(user));
+    else{
+        user.signedIn = true;
+        sessionStorage.setItem('user', JSON.stringify(user));
+        console.log(user)
+        $("#profile-url").attr("href", user.profileUrl );
+        $("#startroast-url").attr("href", user.startUrl );
+    }
+
     
     $.get("/roasts/", function(data){
         if(data){
             console.log(data);
             var roastButtons = "";
-            var stillRoasting = [];
+            //var stillRoasting = [];
             for(i=0; i<data.length; i++){
-                if(data[i].stillRoasting === true){
+                if(data[i].status === "waiting"){
                     roastButtons += "<form class='create-update-form' action='/roasts/" + data[i].id + "' method='GET'>"+
                     "<button type='submit' class='btn waves-effect waves-light btn-large join-btn'"+
                     " id='" + data[i].id + "'><span>Join Roast " + data[i].id + "</span></button></form>";
@@ -57,8 +82,9 @@ $(document).ready(function () {
             var message = $("#textarea1").val();
 
             chatData.push({
-                user: UserId,
-                email: email,
+                user: user.UserId,
+                username: user.username,
+                email: user.email,
                 message: message
             });
 
@@ -77,8 +103,9 @@ $(document).ready(function () {
             var message = $("#textarea1").val();
 
             chatData.push({
-                user: UserId,
-                email: email,
+                user: user.UserId,
+                username: user.username,
+                email: user.email,
                 message: message
             });
 
@@ -88,14 +115,14 @@ $(document).ready(function () {
         }
     });
 
-
+    //if data push to database - log to DOM
     chatData.on('child_added', function (snapshot) {
         var msg = snapshot.val();
-        displayMsg(msg.user, msg.message);
+        displayMsg(msg.username, msg.message);
     });
 
-    function displayMsg(userId, message) {
-        $('<div />').text(message).prepend($('<em/>').text(userId + ': ')).appendTo('#chatMsg');
+    function displayMsg(username, message) {
+        $('<div />').text(message).prepend($('<em/>').text(username + ': ')).appendTo('#chatMsg');
 
         // $('#chatBox').scrollTop = $('#chatBox').scrollHeight;
         $("#chatMsg").stop().animate({ scrollTop: $("#chatMsg")[0].scrollHeight}, 1000);

@@ -178,7 +178,7 @@ function getStatus(){
 function wait(){
     $("#displayQuotes").html("<p>waiting on players</p>");
     //numbers of participants required. this can be changed to make a larger game
-    if (numPlayers > 1) {
+    if (numPlayers > 2) {
         var randomNum = Math.floor(Math.random()*numPlayers);
         console.log(randomNum);
         console.log(players)
@@ -252,7 +252,7 @@ function displayQuotes(quotes) {
         console.log(quotes);
         for(i=0; i<quotes.length; i++){
         // moved the class to <p> instead of <a>
-        html += "<p class='winner'><a class='winner sel-winner' id='" + quotes[i].RoastId +
+        html += "<p class='winner'><a class='sel-winner' id='" + quotes[i].RoastId +
         "' user='" + quotes[i].UserId + "' quoteId='" + quotes[i].id + 
         "' value='" + quotes[i].quote + "'> User: " + quotes[i].UserId + 
         " Quote: " + quotes[i].quote + "</a></p>";

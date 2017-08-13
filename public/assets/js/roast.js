@@ -2,6 +2,7 @@ $(document).ready(function () {
 
     //load quotes on intervarl
     var nIntervId;
+    var airHorn = new Audio('/assets/audio/horn.wav');
 
     function updateGame() {
         nIntervId = setInterval(getStatus, 500);
@@ -199,9 +200,21 @@ function wait(){
                 status: "playing" },
             success: function (data) {
                 console.log(data);
+                diplayRoastee();
             }
         })
     }
+}
+
+
+function diplayRoastee(){
+    console.log("show roastee!")
+    $.get("/users/username/"+roastee, function(data){
+        console.log("roastee"+JSON.stringify(data));
+        $("#uName").html("<h4>"+data.username+"</h4>");
+        $("#uBio").html(data.about);
+        $("#uImg").attr("src", data.image);
+    })
 }
 
 function displayWinner() {
@@ -209,8 +222,9 @@ function displayWinner() {
         console.log(data);
         $("#displayQuotes").html("<h1>Winner!</h1><p> User: " + data.winner + " Quote: " +
         data.quote + "</p>");
-    })
+    });
     endRoast();
+    airHorn.play();
 }
 
 //gets the quotes of the current roast and displays them in #displayQuotes <div>
@@ -315,6 +329,7 @@ function displayQuotes(quotes) {
                 console.log(data);
             }
         })
+        airHorn.play();
 
     })
 
